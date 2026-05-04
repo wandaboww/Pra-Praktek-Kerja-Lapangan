@@ -261,7 +261,11 @@ export default function Pemetaan() {
 
       const mappedSiswa = dataSiswa.map((s: any) => ({
         ...s,
-        mappedPerusahaanId: s.perusahaan_id || null
+        mappedPerusahaanId: s.perusahaan_id || null,
+        _original: {
+          perusahaan_id: s.perusahaan_id || null,
+          skillset: s.skillset
+        }
       }));
 
       setMappings(mappedSiswa);
@@ -282,17 +286,24 @@ export default function Pemetaan() {
     setIsSaving(true);
     setSaveSuccess(false);
     try {
-      // Create updates only for those changed or you can just update all
-      const updates = mappings.map(m => fetch(`${API_SISWA}/${m.id}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-        body: JSON.stringify({
-          ...m,
-          perusahaan_id: m.mappedPerusahaanId
-        })
-      }));
+      // Hanya update data yang berubah
+      const changedMappings = mappings.filter(m => 
+        m.mappedPerusahaanId !== m._original?.perusahaan_id || 
+        m.skillset !== m._original?.skillset
+      );
 
-      await Promise.all(updates);
+      // Lakukan request secara berurutan agar tidak membebani server hosting (mencegah 500 error / rate limit)
+      for (const m of changedMappings) {
+        await fetch(`${API_SISWA}/${m.id}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+          body: JSON.stringify({
+            ...m,
+            perusahaan_id: m.mappedPerusahaanId
+          })
+        });
+      }
+
       setSaveSuccess(true);
       setTimeout(() => setSaveSuccess(false), 3000);
 
