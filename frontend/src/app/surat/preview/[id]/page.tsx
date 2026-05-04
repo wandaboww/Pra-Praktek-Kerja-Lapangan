@@ -100,23 +100,18 @@ export default function PreviewSurat({ params }: { params: Promise<{ id: string 
   useEffect(() => {
     const loadData = async () => {
       try {
-        const [resSurat, resTemplate] = await Promise.all([
-          fetch(`${API_BASE}/surat/${resolvedParams.id}`),
-          fetch(`${API_BASE}/template`)
-        ]);
+        const resSurat = await fetch(`${API_BASE}/surat/${resolvedParams.id}`);
 
         if (!resSurat.ok) throw new Error('Surat not found');
 
         const surat = await resSurat.json();
-        const template = await resTemplate.json();
-
         setSuratData(surat);
 
-        if (template && template.content) {
-          const substituted = substituteTemplate(template.content, surat);
-          setFinalContent(substituted);
+        if (surat.file_path && surat.file_path.trim() !== '') {
+          // If a draft was already saved, use it
+          setFinalContent(surat.file_path);
         } else {
-          // Use default template from docx if not set in DB
+          // Always use the new document template by default
           const substituted = substituteTemplate(DEFAULT_TEMPLATE, surat);
           setFinalContent(substituted);
         }
@@ -169,6 +164,14 @@ export default function PreviewSurat({ params }: { params: Promise<{ id: string 
       editor.commands.setContent(finalContent);
     }
   }, [editor, finalContent]);
+
+  const handleResetTemplate = () => {
+    if (!editor || !suratData) return;
+    const substituted = substituteTemplate(DEFAULT_TEMPLATE, suratData);
+    editor.commands.setContent(substituted);
+    // Optionally save it immediately
+    // handleSaveDraft();
+  };
 
   const handleSaveDraft = async () => {
     if (!editor || !suratData) return;
@@ -241,6 +244,14 @@ export default function PreviewSurat({ params }: { params: Promise<{ id: string 
         </div>
         <div className="flex gap-2 items-center">
           {saveSuccess && <span className="text-emerald-500 font-medium text-sm">✔ Tersimpan</span>}
+          <button 
+            className="flex items-center gap-2 px-4 py-2.5 rounded-lg font-medium transition-colors shadow-sm bg-white border border-slate-200 hover:bg-red-50 text-red-600 hover:border-red-200"
+            onClick={handleResetTemplate}
+            title="Kembalikan surat ini ke format asli dari dokumen Word terbaru"
+          >
+            <Undo className="w-4 h-4" />
+            Reset ke Template Baru
+          </button>
           <button 
             className={`flex items-center gap-2 px-4 py-2.5 rounded-lg font-medium transition-colors shadow-sm ${
               isSaving ? 'bg-slate-200 text-slate-400 cursor-not-allowed' : 'bg-white border border-slate-200 hover:bg-slate-50 text-slate-700'

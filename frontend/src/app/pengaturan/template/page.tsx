@@ -50,6 +50,7 @@ import {
   FileText
 } from 'lucide-react';
 import { useState, useEffect, useCallback, useRef } from 'react';
+import { DEFAULT_TEMPLATE } from '@/lib/defaultTemplate';
 
 const LineHeight = Extension.create({
   name: 'lineHeight',
@@ -128,96 +129,7 @@ export default function TemplateSurat() {
   const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'https://api-pemetaanpkl.pplgsmkn1ciomas.my.id/api';
   const API_TEMPLATE = `${API_BASE}/template`;
 
-  const defaultContent = `
-    <!-- ========== KOP SURAT ========== -->
-    <table style="width: 100%; border: none; margin-bottom: 0;">
-      <tbody>
-        <tr>
-          <td style="width: 15%; text-align: center; vertical-align: middle; border: none; padding: 0;">
-            <p style="text-align: center; color: #94a3b8; font-size: 10px;"><em>[Logo Prov]</em></p>
-          </td>
-          <td style="width: 70%; text-align: center; vertical-align: middle; border: none; padding: 0;">
-            <p style="text-align: center; margin: 0; font-size: 12px; text-transform: uppercase;">PEMERINTAH DAERAH PROVINSI JAWA BARAT</p>
-            <p style="text-align: center; margin: 0; font-size: 12px; text-transform: uppercase;">DINAS PENDIDIKAN</p>
-            <p style="text-align: center; margin: 0; font-size: 18px; text-transform: uppercase;"><strong>SMK NEGERI 1 CIOMAS</strong></p>
-            <p style="text-align: center; margin: 0; font-size: 9px;">Jl Raya Laladon Desa Laladon, Kecamatan Ciomas, Kabupaten Bogor - Jawa Barat</p>
-            <p style="text-align: center; margin: 0; font-size: 9px;">16610; Telpon (0251) 7520933</p>
-            <p style="text-align: center; margin: 0; font-size: 9px;">e-mail : smkn1_ciomas@yahoo.co.id; web : www.smkn1ciomas.sch.id</p>
-          </td>
-          <td style="width: 15%; text-align: center; vertical-align: middle; border: none; padding: 0;">
-            <p style="text-align: center; color: #94a3b8; font-size: 10px;"><em>[Logo SMK]</em></p>
-          </td>
-        </tr>
-      </tbody>
-    </table>
-
-    <!-- ========== GARIS PEMISAH (Double Line) ========== -->
-    <hr />
-
-    <!-- ========== ATRIBUT / METADATA SURAT ========== -->
-    <table style="width: 60%; border: none; margin-top: 10px; margin-bottom: 10px;">
-      <tbody>
-        <tr>
-          <td style="width: 80px; border: none; padding: 2px 0; vertical-align: top;">Nomor</td>
-          <td style="width: 10px; border: none; padding: 2px 0; vertical-align: top;">:</td>
-          <td style="border: none; padding: 2px 0; vertical-align: top;">{{NOMOR_SURAT}}</td>
-        </tr>
-        <tr>
-          <td style="border: none; padding: 2px 0; vertical-align: top;">Lampiran</td>
-          <td style="border: none; padding: 2px 0; vertical-align: top;">:</td>
-          <td style="border: none; padding: 2px 0; vertical-align: top;">-</td>
-        </tr>
-        <tr>
-          <td style="border: none; padding: 2px 0; vertical-align: top;">Perihal</td>
-          <td style="border: none; padding: 2px 0; vertical-align: top;">:</td>
-          <td style="border: none; padding: 2px 0; vertical-align: top;">Permohonan Tempat Praktik Kerja Lapangan (PKL)</td>
-        </tr>
-      </tbody>
-    </table>
-
-    <!-- ========== PENERIMA SURAT ========== -->
-    <p><strong>Kepada Yth.</strong></p>
-    <p><strong>{{PIMPINAN_PERUSAHAAN}}</strong></p>
-    <p><strong>{{NAMA_PERUSAHAAN}}</strong></p>
-    <p>&nbsp;</p>
-    <p><strong>di</strong></p>
-    <p style="margin-left: 40px;"><strong>Tempat</strong></p>
-
-    <!-- ========== ISI SURAT ========== -->
-    <p>&nbsp;</p>
-    <p style="margin-left: 40px;">Dengan hormat,</p>
-    <p>&nbsp;</p>
-    <p style="text-align: justify;">Sehubungan dengan program kegiatan belajar mengajar murid-murid SMK Negeri 1 Ciomas Kabupaten Bogor tahun ajaran {{TAHUN_AJARAN}} tentang penyelenggaraan Praktek Kerja Lapangan (PKL), maka dengan ini kami mohon ijin untuk diperkenankan murid-murid kami dari program keahlian Pengembangan Perangkat Lunak dan Gim agar mengikuti PKL di perusahaan yang bapak /Ibu pimpin, dengan nama sebagai berikut :</p>
-
-    <!-- ========== TABEL DAFTAR SISWA ========== -->
-    <p style="text-align: center; color: #3b82f6; font-style: italic;">
-      {{TABEL_DAFTAR_SISWA}}
-    </p>
-
-    <!-- ========== PENUTUP ========== -->
-    <p style="text-align: justify;">Adapun periode waktu pengajuan pelaksanaan PKL apabila diperkenankan sekitar 6 bulan dimulai pada bulan Juli sampai dengan 31 Desember 2026. Untuk informasi lebih lanjut dapat menghubungi Kepala Program Keahlian Pengembangan Perangkat Lunak dan Gim, Bpk. Wanda Kurniawan, S.Kom dengan kontak No. Whatsapp: 0895612009900.</p>
-    <p>&nbsp;</p>
-    <p style="text-indent: 40px; text-align: justify;">Demikian permohonan ini kami sampaikan. Besar harapan kami agar Bapak/Ibu berkenan menerima siswa kami. Atas perhatian dan kerjasamanya, kami ucapkan terima kasih.</p>
-
-    <!-- ========== TANDA TANGAN ========== -->
-    <p>&nbsp;</p>
-    <p>&nbsp;</p>
-    <table style="width: 100%; border: none;">
-      <tbody>
-        <tr>
-          <td style="width: 60%; border: none;"></td>
-          <td style="width: 40%; text-align: center; border: none;">
-            <p style="text-align: center;">Kepala Sekolah,</p>
-            <p style="text-align: center;">&nbsp;</p>
-            <p style="text-align: center;">&nbsp;</p>
-            <p style="text-align: center;">&nbsp;</p>
-            <p style="text-align: center;"><strong><u>Drs. H. Guru Teladan, M.Pd</u></strong></p>
-            <p style="text-align: center;">NIP. 19700101 199512 1 001</p>
-          </td>
-        </tr>
-      </tbody>
-    </table>
-  `;
+  const defaultContent = DEFAULT_TEMPLATE;
 
   useEffect(() => {
     fetch(API_TEMPLATE)
