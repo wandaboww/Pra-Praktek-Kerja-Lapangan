@@ -28,6 +28,7 @@ import {
 } from 'lucide-react';
 import { use, useEffect, useState } from 'react';
 import Link from 'next/link';
+import { DEFAULT_TEMPLATE } from '@/lib/defaultTemplate';
 
 function generateSiswaTable(siswas: any[]): string {
   if (!siswas || siswas.length === 0) {
@@ -115,7 +116,9 @@ export default function PreviewSurat({ params }: { params: Promise<{ id: string 
           const substituted = substituteTemplate(template.content, surat);
           setFinalContent(substituted);
         } else {
-          setFinalContent('<p>Template surat belum tersedia. Silakan buat template terlebih dahulu di menu Pengaturan > Template Surat.</p>');
+          // Use default template from docx if not set in DB
+          const substituted = substituteTemplate(DEFAULT_TEMPLATE, surat);
+          setFinalContent(substituted);
         }
       } catch (e) {
         console.error('Gagal memuat data:', e);
