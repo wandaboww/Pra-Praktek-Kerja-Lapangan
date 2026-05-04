@@ -28,9 +28,9 @@ export default function DashboardPage() {
   const [siswaList, setSiswaList] = useState<Siswa[]>([]);
   const [perusahaanList, setPerusahaanList] = useState<Perusahaan[]>([]);
 
-  const HOSTNAME = typeof window !== 'undefined' ? window.location.hostname : '127.0.0.1';
-  const API_SISWA = `http://${HOSTNAME}:8000/api/siswa`;
-  const API_PERUSAHAAN = `http://${HOSTNAME}:8000/api/perusahaan`;
+  const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'https://api-pemetaanpkl.pplgsmkn1ciomas.my.id/api';
+  const API_SISWA = `${API_BASE}/siswa`;
+  const API_PERUSAHAAN = `${API_BASE}/perusahaan`;
 
   useEffect(() => {
     const fetchData = async () => {

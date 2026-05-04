@@ -24,7 +24,7 @@ export default function MasterSiswa() {
   const [isLoaded, setIsLoaded] = useState(false);
 
   // Konfigurasi API
-  const API_URL = typeof window !== 'undefined' ? `http://${window.location.hostname}:8000/api/siswa` : 'http://127.0.0.1:8000/api/siswa';
+  const API_URL = `${process.env.NEXT_PUBLIC_API_URL || 'https://api-pemetaanpkl.pplgsmkn1ciomas.my.id/api'}/siswa`;
 
   const fetchSiswa = async () => {
     try {

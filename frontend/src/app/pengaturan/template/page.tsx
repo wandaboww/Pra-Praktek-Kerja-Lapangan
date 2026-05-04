@@ -125,8 +125,8 @@ export default function TemplateSurat() {
 
   const currentPaper = PAPER_SIZES[paperSize];
 
-  const HOSTNAME = typeof window !== 'undefined' ? window.location.hostname : '127.0.0.1';
-  const API_TEMPLATE = `http://${HOSTNAME}:8000/api/template`;
+  const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'https://api-pemetaanpkl.pplgsmkn1ciomas.my.id/api';
+  const API_TEMPLATE = `${API_BASE}/template`;
 
   const defaultContent = `
     <!-- ========== KOP SURAT ========== -->

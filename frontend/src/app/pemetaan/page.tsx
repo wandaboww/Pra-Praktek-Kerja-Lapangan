@@ -243,9 +243,9 @@ export default function Pemetaan() {
   const [unmappedIndex, setUnmappedIndex] = useState(0);
   const [unmappedStudentIndex, setUnmappedStudentIndex] = useState(0);
 
-  const HOSTNAME = typeof window !== 'undefined' ? window.location.hostname : '127.0.0.1';
-  const API_SISWA = `http://${HOSTNAME}:8000/api/siswa`;
-  const API_PERUSAHAAN = `http://${HOSTNAME}:8000/api/perusahaan`;
+  const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'https://api-pemetaanpkl.pplgsmkn1ciomas.my.id/api';
+  const API_SISWA = `${API_BASE}/siswa`;
+  const API_PERUSAHAAN = `${API_BASE}/perusahaan`;
 
   const fetchData = async () => {
     try {

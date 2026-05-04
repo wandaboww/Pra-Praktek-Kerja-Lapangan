@@ -18,8 +18,7 @@ export default function RiwayatSurat() {
   const [searchQuery, setSearchQuery] = useState("");
   const [filterStatus, setFilterStatus] = useState("");
 
-  const HOSTNAME = typeof window !== 'undefined' ? window.location.hostname : '127.0.0.1';
-  const API_BASE = `http://${HOSTNAME}:8000/api`;
+  const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'https://api-pemetaanpkl.pplgsmkn1ciomas.my.id/api';
 
   const fetchSurat = async () => {
     setIsLoading(true);
